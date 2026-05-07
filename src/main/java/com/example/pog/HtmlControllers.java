@@ -15,4 +15,9 @@ public class HtmlControllers {
      public String dato1() {
           return "dato.html";
      }
+
+     @GetMapping("/galery")
+     public String galery() {
+          return "galery.html";
+     }
 }
