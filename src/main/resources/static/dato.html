@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Поиск дат</title>
+     <style>
+          * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+          }
+
+          body {
+               font-family: Arial, sans-serif;
+               text-align: center;
+               background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+               min-height: 100vh;
+               display: flex;
+               flex-direction: column;
+               justify-content: center;
+               align-items: center;
+               padding: 20px;
+          }
+
+          .search-container {
+               background: rgba(255, 255, 255, 0.05);
+               backdrop-filter: blur(10px);
+               border-radius: 20px;
+               padding: 40px 30px;
+               box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+               border: 1px solid rgba(255, 255, 255, 0.1);
+               max-width: 500px;
+               width: 100%;
+          }
+
+          h1 {
+               color: #fff;
+               font-size: clamp(28px, 6vw, 40px);
+               margin-bottom: 30px;
+               text-transform: uppercase;
+               letter-spacing: 2px;
+               text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+          }
+
+          .input-group {
+               display: flex;
+               flex-direction: column;
+               gap: 15px;
+               margin-bottom: 20px;
+          }
+
+          input {
+               width: 100%;
+               padding: 15px 20px;
+               font-size: clamp(16px, 3vw, 20px);
+               border: 2px solid rgba(255, 255, 255, 0.2);
+               border-radius: 12px;
+               background: rgba(255, 255, 255, 0.1);
+               color: #fff;
+               outline: none;
+               transition: all 0.3s ease;
+               text-align: center;
+          }
+
+          input:focus {
+               border-color: #e94560;
+               box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+               background: rgba(255, 255, 255, 0.15);
+          }
+
+          input::placeholder {
+               color: rgba(255, 255, 255, 0.5);
+          }
+
+          /* Убираем стрелочки в number input */
+          input[type="number"]::-webkit-inner-spin-button,
+          input[type="number"]::-webkit-outer-spin-button {
+               -webkit-appearance: none;
+               margin: 0;
+          }
+
+          button {
+               width: 100%;
+               padding: 15px 20px;
+               font-size: clamp(16px, 3vw, 22px);
+               font-weight: bold;
+               border: none;
+               border-radius: 12px;
+               background: linear-gradient(135deg, #e94560, #c23152);
+               color: #fff;
+               cursor: pointer;
+               transition: all 0.3s ease;
+               text-transform: uppercase;
+               letter-spacing: 1px;
+               box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+          }
+
+          button:hover {
+               transform: translateY(-2px);
+               box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
+               background: linear-gradient(135deg, #ff6b6b, #e94560);
+          }
+
+          button:active {
+               transform: translateY(0);
+               box-shadow: 0 2px 10px rgba(233, 69, 96, 0.3);
+          }
+
+          #res {
+               color: #fff;
+               font-size: clamp(16px, 3.5vw, 22px);
+               margin-top: 25px;
+               padding: 20px;
+               background: rgba(255, 255, 255, 0.08);
+               border-radius: 12px;
+               border-left: 4px solid #e94560;
+               min-height: 60px;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               word-break: break-word;
+               transition: all 0.3s ease;
+          }
+
+          .back-link {
+               margin-top: 30px;
+               color: rgba(255, 255, 255, 0.7);
+               text-decoration: none;
+               font-size: clamp(14px, 2.5vw, 18px);
+               transition: color 0.3s ease;
+          }
+
+          .back-link:hover {
+               color: #e94560;
+          }
+
+          /* Адаптив для телефонов */
+          @media (max-width: 480px) {
+               .search-container {
+                    padding: 30px 20px;
+               }
+
+               input,
+               button {
+                    padding: 12px 15px;
+               }
+          }
+     </style>
+</head>
+
+<body>
+     <div class="search-container">
+          <h1>🔍 Поиск дат</h1>
+          <div class="input-group">
+               <input type="number" id="num" placeholder="Введите год...">
+               <button id="btn">Найти</button>
+          </div>
+          <p id="res">Результат</p>
+     </div>
+     <a href="/" class="back-link">← Вернуться к материалу</a>
+
+     <script>
+          document.getElementById("btn").addEventListener("click", function () {
+               const input = document.getElementById("num");
+               const res = document.getElementById("res");
+
+               if (!input.value) {
+                    res.innerHTML = "⚠️ Введите год!";
+                    res.style.borderLeftColor = "#ffc107";
+                    return;
+               }
+
+               res.innerHTML = "⏳ Загрузка...";
+               res.style.borderLeftColor = "#e94560";
+
+               fetch("/data/" + input.value)
+                    .then(response => {
+                         if (!response.ok) {
+                              throw new Error("Ошибка запроса");
+                         }
+                         return response.text();
+                    })
+                    .then(text => {
+                         res.innerHTML = text;
+                         res.style.borderLeftColor = "#2ecc71";
+                    })
+                    .catch(err => {
+                         console.error(err);
+                         res.innerHTML = "❌ Ошибка! Попробуйте снова.";
+                         res.style.borderLeftColor = "#e74c3c";
+                    });
+          });
+
+          // Поиск по Enter
+          document.getElementById("num").addEventListener("keypress", function (e) {
+               if (e.key === "Enter") {
+                    document.getElementById("btn").click();
+               }
+          });
+     </script>
+</body>
+
+</html>
