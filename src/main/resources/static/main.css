@@ -77,9 +77,10 @@ ul {
 }
 
 li {
-     font-size: clamp(18px, 4w, 22px);
-     padding: 3px 0;
+     font-size: clamp(18px, 4vw, 24px);
+     padding: 5px 0;
      color: #555;
+     line-height: 1.6;
 }
 
 a {
@@ -115,6 +116,11 @@ a:hover {
 
      ul {
           padding: 10px 20px;
+     }
+
+     li {
+          font-size: clamp(16px, 3.5vw, 20px);
+          padding: 4px 0;
      }
 }
 
